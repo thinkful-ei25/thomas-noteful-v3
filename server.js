@@ -2,8 +2,8 @@
 
 const express = require('express');
 const morgan = require('morgan');
-
-const { PORT } = require('./config');
+const mongoose = require('mongoose');
+const { PORT, MONGODB_URI } = require('./config');
 
 const notesRouter = require('./routes/notes');
 
@@ -41,6 +41,20 @@ app.use((err, req, res, next) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
+
+// mongoose.connect(MONGODB_URI, { useNewUrlParser:true })
+//   .then(instance => {
+//     const connection = instance.connections[0];
+//     console.log('connected to monogo at', connection.host, connection.port, connection.name);
+//   });
+
+// Connect to DB and Listen for incoming connections
+mongoose.connect(MONGODB_URI, { useNewUrlParser:true })
+  .catch(err => {
+    console.error(`ERROR: ${err.message}`);
+    console.error('\n === Did you remember to start `mongod`? === \n');
+    console.error(err);
+  });
 
 // Listen for incoming connections
 if (process.env.NODE_ENV !== 'test') {
