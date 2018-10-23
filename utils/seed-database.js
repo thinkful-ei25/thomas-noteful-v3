@@ -12,7 +12,7 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser:true })
   .then(() => Note.insertMany(notes))
   .then(results => {
     console.info(`Inserted ${results.length} Notes`);
-    console.log(notes);
+    // console.log(notes);
   })
   .then(() => mongoose.disconnect())
   .catch(err => {
