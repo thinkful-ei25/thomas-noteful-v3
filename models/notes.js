@@ -4,7 +4,9 @@ const mongoose = require('mongoose');
 
 const noteSchema = new mongoose.Schema({
   title: { type: String, required: true },
-  content: String
+  content: String,
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: Date
 });
 
 // Add `createdAt` and `updatedAt` fields
