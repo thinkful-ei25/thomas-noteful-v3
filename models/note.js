@@ -12,12 +12,15 @@ const noteSchema = new mongoose.Schema({
 // Add `createdAt` and `updatedAt` fields
 noteSchema.set('timestamps', true);
 
-noteSchema.set('toObject', {
+const config = {
   virtuals: true,     // include built-in virtual `id`
   transform: (doc, ret) => {
     delete ret._id; // delete `_id`
     delete ret.__v;
   }
-});
+};
+
+noteSchema.set('toObject', config);
+noteSchema.set('toJSON', config);
 
 module.exports = mongoose.model('Note', noteSchema);
