@@ -71,7 +71,7 @@ router.get('/:id', (req, res, next) => {
 
 /* ========== POST/CREATE AN ITEM ========== */
 router.post('/', (req, res, next) => {
-  const { title, content, folderId, tags } = req.body;
+  const { title, content, folderId, tags = [] } = req.body;
 
   if (!title) {
     const err = new Error('Missing `title` in request body');
@@ -89,12 +89,6 @@ router.post('/', (req, res, next) => {
     const err = new Error('The `id` is not valid');
     err.status = 400;
     return next(err);
-    // enter this code in postman to test this
-    // {
-    //   "title": "test post title1",
-    //   "content": "test post content1",
-    //   "folderId": "0101"
-    // }
   }
 
   tags.forEach(tag => {
@@ -104,21 +98,6 @@ router.post('/', (req, res, next) => {
       return next(err);
     }
   });
-
-  // ^ TEST THIS IN POSTMAN - CODE BELOW
-  // {
-  //   "tags": ["222222222222222222222200", "222222222222222222222201", "222222222222222222222202"],
-  //   "title": "test 2",
-  //   "content": "test 2",
-  //   "folderId": "111111111111111111111102"
-  // }
-
-  // ***************************************************************************
-  // **** QUESTION ^ Verify each tag id is a valid ObjectId and, if necessary, 
-  // return a user-friendly response with a 400 status
-  // ? -> When I placed this validation and tried to post more that one tag
-  // the error was always thrown.
-  // ***************************************************************************
 
   const newNote = { title, content, folderId, tags };
 
@@ -170,13 +149,12 @@ router.put('/:id', (req, res, next) => {
   }
 
   if (updateNote.tags) {
-    updateNote.tags.forEach(tag => {
-      if (!mongoose.Types.ObjectId.isValid(tag)) {
-        const err = new Error('The `tag` is not valid');
-        err.status = 400;
-        return next(err);
-      }
-    });
+    const badIds = updateNote.tags.filter((tag) => !mongoose.Types.ObjectId.isValid(tag));
+    if (badIds.length) {
+      const err = new Error('The `tags` array contains an invalid id');
+      err.status = 400;
+      return next(err);
+    }
   }
 
   if (updateNote.folderId === '') {
