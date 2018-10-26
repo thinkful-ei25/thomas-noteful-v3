@@ -8,7 +8,7 @@ const router = express.Router();
 /* ========== GET/READ ALL FOLDERS ========== */
 router.get('/', (req, res, next) => {
   Folder.find().sort({ name: 'asc' }) 
-  // *NOTE:^ lowercase and caps have diff valus and this influences sorting
+  // *NOTE:^ lowercase and caps have diff values and this influences sorting
     .then(results => {
       res.json(results);
     })
