@@ -28,7 +28,7 @@ router.get('/:id', (req, res, next) => {
   Folder.findById(id)
     .then(result => {
       if (result) {
-        res.json(result).status(200);
+        res.json(result);
       } else {
         next();
       }
