@@ -109,15 +109,20 @@ router.delete('/:id', (req, res, next) => {
     err.status = 400;
     return next(err);
   }
+  
+  const tagRemovePromise = Tag.findByIdAndRemove(id);
 
-  Tag.findByIdAndRemove(id)
+  const noteUpdatePromise = Note.updateMany(
+    { tags: id },
+    { $pull: { tags: id } }  
+  );
+
+  Promise.all([tagRemovePromise, noteUpdatePromise])
     .then(() => {
       res.status(204).end();
     })
     .catch(err => next(err));
 
-  Note.update({ $pull: { tags: id }});
-  // ^ note sure if this is correct need to check later.
 });
 
 module.exports = router;
